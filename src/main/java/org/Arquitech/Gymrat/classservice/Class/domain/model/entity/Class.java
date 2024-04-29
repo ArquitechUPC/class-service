@@ -10,7 +10,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "class") // This is a reserved keyword in SQL
+@Table(name = "classes") // This is a reserved keyword in SQL
 public class Class {
 
     @Id

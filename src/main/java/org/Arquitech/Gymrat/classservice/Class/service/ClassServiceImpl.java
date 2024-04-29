@@ -77,10 +77,11 @@ public class ClassServiceImpl implements ClassService {
     }
 
     @Override
-    public void delete(Integer id) {
+    public boolean deleteById(Integer id) {
         var classToDelete = classRepository.findById(id)
                 .orElseThrow(() -> new CustomException("Class not found", HttpStatus.NOT_FOUND));
 
         classRepository.delete(classToDelete);
+        return true;
     }
 }

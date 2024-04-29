@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Configuration;
 public class MappingConfiguration {
 
     @Bean
-    public ClassMapper planMapper(){
+    public ClassMapper classMapper(){
         return new ClassMapper();
     }
 }

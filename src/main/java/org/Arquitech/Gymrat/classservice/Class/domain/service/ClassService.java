@@ -10,5 +10,5 @@ public interface ClassService {
     Optional<Class> fetchById(Integer Id);
     Class save(Class aClass);
     Class update(Class aClass);
-    void delete(Integer id);
+    boolean deleteById(Integer id);
 }

@@ -15,7 +15,7 @@ public class UpdateClassResource {
     @NotBlank
     @NotNull
     @Min(1)
-    private Integer id;
+    private Integer Id;
 
     @NotBlank
     @NotNull
