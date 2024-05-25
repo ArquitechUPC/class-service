@@ -49,6 +49,7 @@ public class ClassServiceImpl implements ClassService {
 
     @Override
     public Class save(Class aClass) {
+        aClass.setActualCapacity(aClass.getCapacity());
         Set<ConstraintViolation<Class>> violations = validator.validate(aClass);
         if (!violations.isEmpty()) {
             throw new CustomException("Error", HttpStatus.NOT_FOUND);
@@ -68,6 +69,7 @@ public class ClassServiceImpl implements ClassService {
             aClassToUpdate.setDescription(aClass.getDescription());
             aClassToUpdate.setDuration(aClass.getDuration());
             aClassToUpdate.setCapacity(aClass.getCapacity());
+            aClassToUpdate.setActualCapacity(aClass.getActualCapacity());
             aClassToUpdate.setInstructor(aClass.getInstructor());
             aClassToUpdate.setType(aClass.getType());
             aClassToUpdate.setLevel(aClass.getLevel());
@@ -84,4 +86,25 @@ public class ClassServiceImpl implements ClassService {
         classRepository.delete(classToDelete);
         return true;
     }
+
+    @Override
+    public List<Class> fetchByClient(Integer id) {
+
+        return null;
+    }
+
+    @Override
+    public Class updateVacancy(Integer id) {
+        Class aux = classRepository.findById(id).get();
+        aux.setActualCapacity((aux.getActualCapacity().intValue())-1);
+        return classRepository.save(aux);
+    }
+
+    @Override
+    public Class increasesVacancy(Integer id) {
+        Class aux = classRepository.findById(id).get();
+        aux.setActualCapacity((aux.getActualCapacity().intValue())+1);
+        return classRepository.save(aux);
+    }
+
 }

@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.xml.ws.Response;
 import lombok.AllArgsConstructor;
 import org.Arquitech.Gymrat.classservice.Class.domain.model.entity.Class;
 import org.Arquitech.Gymrat.classservice.Class.domain.service.ClassService;
@@ -95,4 +96,23 @@ public class ClassController {
         }
     }
 
+    @GetMapping("/client/{id}")
+    public ResponseEntity<?> fetchClientClass(@PathVariable Integer  id){
+        return ResponseEntity.ok(classService.fetchAll()); //cambia el fetch
+    }
+
+    @PostMapping("availability-class/{id}")
+    public ResponseEntity<?> availabilityClass(@PathVariable Integer id){
+        return ResponseEntity.ok(classService.fetchById(id).get().getActualCapacity().intValue()>0);
+    }
+
+    @PostMapping("/update-vacancy")
+    public ResponseEntity<?> updateVacancy(@RequestBody Integer id){
+        return ResponseEntity.ok(classService.updateVacancy(id));
+    }
+
+    @PostMapping("/increases-vacancy")
+    public ResponseEntity<?> increasesVacancy(@RequestBody Integer id){
+        return ResponseEntity.ok(classService.increasesVacancy(id));
+    }
 }

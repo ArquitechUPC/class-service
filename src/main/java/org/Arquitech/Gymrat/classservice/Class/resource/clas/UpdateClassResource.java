@@ -31,7 +31,11 @@ public class UpdateClassResource {
 
     @NotBlank
     @NotNull
-    private String capacity;
+    private Integer actualCapacity;
+
+    @NotBlank
+    @NotNull
+    private Integer capacity;
 
     @NotBlank
     @NotNull

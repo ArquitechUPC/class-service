@@ -31,6 +31,10 @@ public class Class {
 
     @NotNull
     @Column(nullable = false)
+    private Integer actualCapacity;
+
+    @NotNull
+    @Column(nullable = false)
     private Integer capacity;
 
     @NotBlank
@@ -52,4 +56,7 @@ public class Class {
     @NotNull
     @Column(length = 30, nullable = false)
     private String room;
+
+
+
 }

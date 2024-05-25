@@ -11,4 +11,8 @@ public interface ClassService {
     Class save(Class aClass);
     Class update(Class aClass);
     boolean deleteById(Integer id);
+    Class updateVacancy(Integer id);
+
+    Class increasesVacancy(Integer id);
+    List<Class> fetchByClient(Integer id);
 }
