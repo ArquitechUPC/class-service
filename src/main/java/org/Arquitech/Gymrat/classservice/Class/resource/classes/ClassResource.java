@@ -1,6 +1,5 @@
-package org.Arquitech.Gymrat.classservice.Class.resource.clas;
+package org.Arquitech.Gymrat.classservice.Class.resource.classes;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 
 

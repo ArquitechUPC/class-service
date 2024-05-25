@@ -1,9 +1,17 @@
 package org.Arquitech.Gymrat.classservice.Class.service;
 
 
+import com.stripe.exception.StripeException;
+import com.stripe.model.PaymentIntent;
+import com.stripe.param.PaymentIntentCreateParams;
 import org.Arquitech.Gymrat.classservice.Class.domain.model.entity.Class;
 import org.Arquitech.Gymrat.classservice.Class.domain.persistence.ClassRepository;
 import org.Arquitech.Gymrat.classservice.Class.domain.service.ClassService;
+import org.Arquitech.Gymrat.classservice.Class.resource.admin.AdminServiceClient;
+import org.Arquitech.Gymrat.classservice.Class.resource.classes.ClassResource;
+import org.Arquitech.Gymrat.classservice.Class.resource.client.ClientDto;
+import org.Arquitech.Gymrat.classservice.Class.resource.client.ClientServiceClient;
+import org.Arquitech.Gymrat.classservice.Class.resource.payment.PaymentDto;
 import org.Arquitech.Gymrat.classservice.Shared.exception.CustomException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +20,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import jakarta.validation.Validator;
 import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
 
+
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -22,6 +31,12 @@ import java.util.Set;
 public class ClassServiceImpl implements ClassService {
     @Autowired
     private ClassRepository classRepository;
+
+    @Autowired
+    private AdminServiceClient adminServiceClient;
+
+    @Autowired
+    private ClientServiceClient clientServiceClient;
 
     @Autowired
     private Validator validator;
@@ -83,5 +98,58 @@ public class ClassServiceImpl implements ClassService {
 
         classRepository.delete(classToDelete);
         return true;
+    }
+
+    @Override
+    public ClassResource processClassPayment(Integer clientId, Integer classId, PaymentDto paymentDto) {
+
+        ClientDto clientDto = clientServiceClient.getClientById(clientId);
+
+
+        Class classe = classRepository.findById(classId)
+                .orElseThrow(() -> new CustomException("Class not found", HttpStatus.NOT_FOUND));
+
+        try {
+
+            String stripeCardToken = clientDto.getStripeCardToken();
+
+
+            PaymentIntent paymentIntent = PaymentIntent.create(
+                    new PaymentIntentCreateParams.Builder()
+                            .setAmount(paymentDto.getAmount().multiply(new BigDecimal(100)).longValue())
+                            .setCurrency("usd")
+                            .setCustomer(clientDto.getStripeCustomerId())
+                            .setPaymentMethod(stripeCardToken)
+                            .build()
+            );
+
+
+            paymentDto.setStripeTransactionId(paymentIntent.getId());
+            paymentDto.setPaymentStatus("paid");
+
+        } catch (StripeException e) {
+
+            throw new CustomException(e.getMessage(), HttpStatus.BAD_REQUEST);
+        }
+
+
+        adminServiceClient.notifyPayment(paymentDto);
+
+
+        return convertToDto(classe);
+    }
+
+    private ClassResource convertToDto(Class classe) {
+        ClassResource dto = new ClassResource();
+        dto.setId(classe.getId());
+        dto.setName(classe.getName());
+        dto.setDescription(classe.getDescription());
+        dto.setDuration(classe.getDuration().toString());
+        dto.setCapacity(classe.getCapacity().toString());
+        dto.setInstructor(classe.getInstructor());
+        dto.setType(classe.getType());
+        dto.setLevel(classe.getLevel());
+        dto.setRoom(classe.getRoom());
+        return dto;
     }
 }

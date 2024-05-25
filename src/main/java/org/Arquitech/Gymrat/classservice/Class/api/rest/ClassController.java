@@ -10,9 +10,10 @@ import lombok.AllArgsConstructor;
 import org.Arquitech.Gymrat.classservice.Class.domain.model.entity.Class;
 import org.Arquitech.Gymrat.classservice.Class.domain.service.ClassService;
 import org.Arquitech.Gymrat.classservice.Class.mapping.ClassMapper;
-import org.Arquitech.Gymrat.classservice.Class.resource.clas.CreateClassResource;
-import org.Arquitech.Gymrat.classservice.Class.resource.clas.ClassResource;
-import org.Arquitech.Gymrat.classservice.Class.resource.clas.UpdateClassResource;
+import org.Arquitech.Gymrat.classservice.Class.resource.classes.CreateClassResource;
+import org.Arquitech.Gymrat.classservice.Class.resource.classes.ClassResource;
+import org.Arquitech.Gymrat.classservice.Class.resource.classes.UpdateClassResource;
+import org.Arquitech.Gymrat.classservice.Class.resource.payment.PaymentDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -93,6 +94,17 @@ public class ClassController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @PostMapping("/{classId}/payment") // Endpoint para procesar el pago de una clase
+    public ResponseEntity<ClassResource> processClassPayment(@PathVariable Integer classId, @RequestBody PaymentDto paymentDto) {
+
+        Integer clientId = paymentDto.getClientId();
+
+
+        ClassResource classResource = classService.processClassPayment(clientId, classId, paymentDto);
+
+        return ResponseEntity.ok(classResource);
     }
 
 }
