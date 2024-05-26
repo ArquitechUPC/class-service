@@ -17,7 +17,7 @@ public class CreateClassResource {
     @NotNull
     private String duration;
     @NotNull
-    private String capacity;
+    private Integer capacity;
     @NotNull
     private String instructor;
     @NotNull

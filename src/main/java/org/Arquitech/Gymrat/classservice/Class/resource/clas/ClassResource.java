@@ -13,8 +13,9 @@ public class ClassResource {
     private Integer id;
     private String name;
     private String description;
-    private String duration;
-    private String capacity;
+    private Integer duration;
+    private Integer actualCapacity;
+    private Integer capacity;
     private String instructor;
     private String type;
     private String level;
